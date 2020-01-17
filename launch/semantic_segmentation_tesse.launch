@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+<launch>
+    <arg name="model"       default="TRTModel"/>
+    <arg name="weight_file" default="$(find semantic_segmentation_ros)/cfg/v5.3/v53-unet-resnet18.onnx"/>
+
+    <node name="semantic_segmentation" pkg="semantic_segmentation_ros" type="semantic_segmentation.py" output="screen">
+        <param name="model"       value="$(arg model)"/>
+        <param name="weight_file" value="$(arg weight_file)"/>
+        <remap from="/image/image_raw" to="/tesse/left_cam_rgb/image_raw"/>
+    </node>
+</launch>

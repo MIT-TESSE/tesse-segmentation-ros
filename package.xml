@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package>
+    <name>semantic_segmentation_ros</name>
+    <version>0.0.1</version>
+    <description>Semantic Segmentation in ROS</description>
+
+    <license>MIT</license>
+    <maintainer email="zachary.ravichandran@ll.mit.edu">Zac Ravichandran</maintainer>
+    <buildtool_depend>catkin</buildtool_depend>
+    <buildtool_depend>catkin_simple</buildtool_depend>
+
+    <!-- Package build dependencies -->
+    <build_depend>rospy</build_depend>
+    <build_depend>cv_bridge</build_depend>
+    <build_depend>sensor_msgs</build_depend>
+
+</package>
