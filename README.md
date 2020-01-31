@@ -41,7 +41,7 @@ cd ..
 
 # install dependencies
 wstool init
-wstool merge gym-ros-interface/install/gym_ros_interface.rosinstall 
+wstool merge semantic-segmentation-ros/install/semantic_segmentation_ros.rosinstall 
 cd ..
 
 # compile
