@@ -48,11 +48,11 @@ class SemanticSegmentation:
         self.image_subscriber = rospy.Subscriber(
             "/image/image_raw", Image, self.image_callback
         )
-        self.image_publisher = rospy.Publisher("/prediction", Image, queue_size=10)
+        self.image_publisher = rospy.Publisher("~prediction", Image, queue_size=10)
 
         if self.publish_debug_image:
             self.debug_image_publisher = rospy.Publisher(
-                "/prediction_debug", Image, queue_size=10
+                "~prediction_debug", Image, queue_size=10
             )
 
         self.cv_bridge = CvBridge()
