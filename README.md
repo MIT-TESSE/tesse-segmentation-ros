@@ -60,11 +60,13 @@ roslaunch semantic_segmentation_ros semantic_segmentation_tesse.launch
 
 ## Disclaimer
 
-Distribution authorized to U.S. Government agencies and their contractors. Other requests for this document shall be referred to the MIT Lincoln Laboratory Technology Office.
+DISTRIBUTION STATEMENT A. Approved for public release. Distribution is unlimited.
 
 This material is based upon work supported by the Under Secretary of Defense for Research and Engineering under Air Force Contract No. FA8702-15-D-0001. Any opinions, findings, conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the Under Secretary of Defense for Research and Engineering.
 
-© 2019 Massachusetts Institute of Technology.
+(c) 2020 Massachusetts Institute of Technology.
+
+MIT Proprietary, Subject to FAR52.227-11 Patent Rights - Ownership by the contractor (May 2014)
 
 The software/firmware is provided to you on an As-Is basis
 
