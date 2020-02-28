@@ -9,7 +9,7 @@ A package for running semantic segmentation networks in ROS using TensorRT.
 ## Installation
 
 ### TensorRT
-This requires TensorRT 6.0.0 or greater. To install via a tar file 
+This requires TensorRT 6.0.0. To install via a tar file 
 
 * Download a TensorRT tar file compatible with your machine through the [NVIDIA TensorRT page](https://developer.nvidia.com/tensorrt)
 * Unpack the tar file into a directory, `<TRT_DIR>`
