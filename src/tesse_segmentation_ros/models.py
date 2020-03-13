@@ -19,33 +19,39 @@
 # this work.
 ###################################################################################################
 
+import cv2
 import numpy as np
 import tensorrt as trt
-import time
 
 import pycuda.autoinit
 import pycuda.driver as cuda
 
-from semantic_segmentation_ros.utils import pad_image, unpad_image
+
+SUPPORTED_MODELS = "[TRTModel]"
 
 
 def get_model(model, weight_file):
+    """ Gets model.
+
+    Notes:
+        Currently supports `TRTModel`, a TensorRT wrapper for any
+        neural network exportable as an ONNX file.
+
+    Args:
+        model (str): Model type. Registered models must be
+            implemented below.
+        weight_file (str): Path to model weights.
+
+    Returns:
+        Any: Returns specified model.
+    """
     if model == "TRTModel":
-        return TesseTRTModel(weight_file)
+        return TRTModel(weight_file)
     else:
-        raise ValueError("Currently only TensorRT models are supported")
-
-
-class TesseTRTModel:
-    def __init__(self, onnx_file_path):
-        self.trt_model = TRTModel(onnx_file_path)
-
-    def infer(self, image):
-        image = pad_image(image, 16, 0)
-        image = image.transpose(2, 0, 1).astype(np.float32)
-        pred = self.trt_model.infer(image)
-        pred = unpad_image(pred, 16, 0)
-        return pred
+        raise ValueError(
+            "Model %s is not supported. Supported models are: %s"
+            % (model, SUPPORTED_MODELS)
+        )
 
 
 class TRTModel:
@@ -55,7 +61,7 @@ class TRTModel:
         """ Model for performing inference with TensorRT.
 
         Args:
-            onnx_file_path (str): Path to ONNX file.
+            onnx_file_path (str): Path to ONNX file defining segmentation network.
         """
         self.input_shape = None
         self.output_shape = None
@@ -63,6 +69,9 @@ class TRTModel:
         self.context = self.engine.create_execution_context()
 
         self.out_cpu, self.in_gpu, self.out_gpu, = self.allocate_buffers(self.engine)
+
+    def get_input_shape_hw(self):
+        return self.input_shape[1:]
 
     def build_engine(self, onnx_file_path):
         """ Build TensorRT engine from ONNX file.
@@ -89,8 +98,44 @@ class TRTModel:
             engine = builder.build_cuda_engine(network)
             return engine
 
-    def infer(self, inputs):
-        """ Perform inference.
+    def infer(self, image):
+        """ Run inference on input image, resizing if necessary.
+
+        Notes:
+            The input image will be resized if it's resolution does not match
+                that expected by the model. Resize is performed with OpenCV
+                using bilinear interpolation.
+
+        Args:
+            image (np.ndarray): Shape (H, W, C) image array.
+
+        Returns:
+            np.ndarray: Shape (H, W) prediction.
+        """
+        input_image_shape = image.shape
+
+        # resize if resolution is mismatched between input and expected image size
+        if image.shape[:2] != self.get_input_shape_hw():
+            image = cv2.resize(
+                image, self.get_input_shape_hw()[::-1]  # resize takes (w, h)
+            )
+
+        image_chw = image.transpose(2, 0, 1).astype(
+            np.float32
+        )  # (h, w, c) -> (c, h ,w)
+
+        prediction = self._infer(image_chw)
+
+        # resize back to original input shape
+        if prediction.shape[:3] != input_image_shape[:2]:
+            prediction = cv2.resize(
+                prediction, input_image_shape[1::-1], interpolation=cv2.INTER_NEAREST
+            )
+
+        return prediction
+
+    def _infer(self, inputs):
+        """ Perform inference on input array.
 
         Args:
             inputs (np.ndarray): Input array of shape CxHxW
@@ -102,14 +147,14 @@ class TRTModel:
             inputs.shape,
             self.input_shape,
         )
-        inputs = inputs.reshape(-1)
-        cuda.memcpy_htod(self.in_gpu, inputs)
-        self.context.execute(1, [int(self.in_gpu), int(self.out_gpu)])
-        cuda.memcpy_dtoh(self.out_cpu, self.out_gpu)
-        return self.out_cpu.reshape(self.output_shape)
+        inputs = inputs.reshape(-1)  # flatten input image
+        cuda.memcpy_htod(self.in_gpu, inputs)  # copy to device
+        self.context.execute(1, [int(self.in_gpu), int(self.out_gpu)])  # run inference
+        cuda.memcpy_dtoh(self.out_cpu, self.out_gpu)  # copy result to host
+        return self.out_cpu.reshape(self.output_shape)  # reshape and return
 
     def allocate_buffers(self, engine):
-        """ Allocate required memory for model inference
+        """ Allocate required memory for model inference.
 
         Args:
             engine (tensorrt.ICudaEngine): TensorRT Engine.

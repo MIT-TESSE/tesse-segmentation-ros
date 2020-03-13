@@ -22,8 +22,8 @@
 import numpy as np
 
 
-# generic labels from the cityscapes dataset
-SEGMENTATION_COLORS = np.array(
+# generic label colors from the cityscapes dataset
+SEGMENTATION_COLORS_CITYSCAPE = np.array(
     [
         [128, 64, 128],
         [244, 35, 2320],
@@ -48,8 +48,8 @@ SEGMENTATION_COLORS = np.array(
 )
 
 
-# colors used in TESSE v53
-SEGMENTATION_COLORS_V53 = np.array(
+# colors used in GOSEEK
+SEGMENTATION_COLORS_GOSEEK = np.array(
     [
         [0, 171, 143],
         [1, 155, 211],
@@ -66,56 +66,24 @@ SEGMENTATION_COLORS_V53 = np.array(
 )
 
 
-def get_debug_image(image):
+def get_class_colored_image(image, color_map=SEGMENTATION_COLORS_GOSEEK):
     """ Turn color code labels.
 
     Args:
         image (np.ndarray): HxW label image.
+        color_map (Optional[np.array]]) Shape (C, 3) array mapping
+            each of C classes to a color.
 
     Returns:
         np.ndarray: Color coded RGB image.
     """
     labels = np.unique(image)
-    if labels.shape[0] > SEGMENTATION_COLORS.shape[0]:
-        raise ValueError("Need more segmentation colors")
+    if labels.shape[0] > color_map.shape[0]:
+        raise ValueError(
+            "Provided segmentation class color map does not have enough values"
+        )
 
     color_image = np.zeros(image.shape + (3,))
     for i, label in enumerate(labels):
-        color_image[np.where(image == label)] = SEGMENTATION_COLORS_V53[label]
+        color_image[np.where(image == label)] = color_map[label]
     return color_image
-
-
-def pad_image(img, h_pad, w_pad):
-    """Add a padding of (`h_pad`, `w_pad`) to `img`
-
-    Args:
-        img (np.ndarray): Array of shape (h, w, c)
-        h_pad (int): Total width padding
-        w_pad (int): Total width padding
-
-    Returns:
-        np.ndarray: Array of shape (h+h_pad, w+w_pad, c)
-    """
-    assert h_pad % 2 == 0 and w_pad % 2 == 0
-    padding = ((h_pad // 2, h_pad // 2), (w_pad // 2, w_pad // 2))
-
-    if len(img.shape) == 3:
-        padding += ((0, 0),)
-
-    return np.pad(img, padding, mode="constant")
-
-
-def unpad_image(img, h_pad, w_pad):
-    """Remove the edge (`h_pad`, `w_pad`) indicies of `img`
-
-    Args:
-        img (np.ndarray): Array of shape (h+h_pad, w+w_pad, c)
-        h_pad (int): Height padding to remove.
-        w_pad (int): Width padding to remove.
-
-    Returns:
-        np.ndarray: Array of shape (h, w, c)
-    """
-    assert h_pad % 2 == 0 and w_pad % 2 == 0
-    h, w = img.shape[:2]
-    return img[h_pad // 2 : h - (h_pad // 2), w_pad // 2 : w - (w_pad // 2)]

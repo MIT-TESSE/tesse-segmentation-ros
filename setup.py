@@ -22,9 +22,9 @@
 from setuptools import setup
 
 setup(
-    name="semantic_segmentation_ros",
-    version='0.1.0',
+    name="tesse_segmentation_ros",
+    version='0.1.1',
     description="semantifc segmentation in ROS",
-    packages=["semantic_segmentation_ros"],
-    package_dir={'': 'src'}
+    packages=["tesse_segmentation_ros"],
+    package_dir={'': 'src'},
 )

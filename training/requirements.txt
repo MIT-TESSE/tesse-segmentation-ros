@@ -1,0 +1,7 @@
+torch==1.2
+torchvision==0.4.0
+pillow<7.0.0
+stable-baselines
+-e git+git@github.mit.edu:TESS/segmentation-models.pytorch.git@feature/tensorrt-compatible#egg=segmentation_models_pytorch
+-e git+https://github.com/MIT-TESSE/tesse-gym.git@0.1.2#egg=tesse_gym
+

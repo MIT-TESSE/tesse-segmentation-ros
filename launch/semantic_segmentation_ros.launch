@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+<launch>
+    <arg name="model"       default="TRTModel"/>
+    <arg name="weight_file" default=""/>
+    <arg name="image_topic" default="/image/image_raw"/>
+
+    <node name="semantic_segmentation" pkg="tesse_segmentation_ros" type="semantic_segmentation.py" output="screen">
+        <param name="model"            value="$(arg model)"/>
+        <param name="weight_file"      value="$(arg weight_file)"/>
+        <remap from="/image/image_raw" to="$(arg image_topic)"/>
+    </node>
+</launch>

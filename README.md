@@ -1,10 +1,26 @@
-# semantic-segmentation-ros
+# tesse-segmentation-ros
 
 A package for running semantic segmentation networks in ROS using TensorRT.
 
 <div align="center">
   <img src="docs/tesse-semantic-segmentation.gif">
 </div>
+
+## Usage
+
+### To Run
+To run the segmentation node in TESSE, use the provided launch file:
+
+__Note__: The required model definition file is not included in this repository. To run a trained network, download one of the provided ONNX files from the the [release page](../../releases) and place it in the `./cfg` folder. Then, pass the appropriate path to the `weight_file` argument in the provided launch file:
+
+```
+roslaunch tesse_segmentation_ros semantic_segmentation_tesse.launch weight_file:=PATH_TO_WEIGHT_FILE
+```
+
+### Training a new network
+
+See [training](training) to get started on training a network in TESSE. 
+
 
 ## Installation
 
@@ -36,12 +52,12 @@ cd ~/catkin_ws
 catkin init
 
 cd src 
-git clone git@github.mit.edu:TESS/semantic-segmentation-ros.git
+git clone git@github.com:MIT-TESSE/tesse-segmentation-ros.git
 cd ..
 
 # install dependencies
 wstool init
-wstool merge semantic-segmentation-ros/install/semantic_segmentation_ros.rosinstall 
+wstool merge tesse-segmentation-ros/install/tesse_segmentation_ros.rosinstall 
 cd ..
 
 # compile
@@ -49,12 +65,6 @@ catkin build
 
 # source workspace
 source ~/catkin_ws/devel/setup.bash
-```
-
-## Usage
-To run in the lastest TESSE build (v5.3), use the provided launch file
-```
-roslaunch semantic_segmentation_ros semantic_segmentation_tesse.launch 
 ```
 
 
