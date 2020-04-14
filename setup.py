@@ -23,7 +23,7 @@ from setuptools import setup
 
 setup(
     name="tesse_segmentation_ros",
-    version='0.1.1',
+    version='0.1.2',
     description="semantifc segmentation in ROS",
     packages=["tesse_segmentation_ros"],
     package_dir={'': 'src'},

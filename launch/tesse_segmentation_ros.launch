@@ -2,7 +2,7 @@
 <launch>
     <arg name="model"       default="TRTModel"/>
     <arg name="weight_file" default=""/>
-    <arg name="image_topic" default="/image/image_raw"/>
+    <arg name="image_topic" default="/tesse/left_cam/image_raw"/>
 
     <node name="semantic_segmentation" pkg="tesse_segmentation_ros" type="semantic_segmentation.py" output="screen">
         <param name="model"            value="$(arg model)"/>

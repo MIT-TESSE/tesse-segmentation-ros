@@ -40,7 +40,7 @@ class SemanticSegmentation:
         """ Semantic segmentation node. """
 
         # get model type
-        model = rospy.get_param("~model", "")
+        model = rospy.get_param("~model", "TRTModel")
 
         # get model weight file
         model_weight_path = rospy.get_param("~weight_file", "")

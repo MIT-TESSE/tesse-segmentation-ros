@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-15"?>
-<launch>
-    <arg name="model"       default="TRTModel"/>
-    <arg name="weight_file" default="$(find tesse_segmentation_ros)/cfg/v5.3/v53-unet-resnet18.onnx"/>
-    <arg name="image_topic" default="/tesse/left_cam/image_raw"/>
-
-    <include file="$(find tesse_segmentation_ros)/launch/semantic_segmentation_ros.launch"
-        pass_all_args="True"/>
-</launch>

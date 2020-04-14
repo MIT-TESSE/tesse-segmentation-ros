@@ -14,7 +14,7 @@ To run the segmentation node in TESSE, use the provided launch file:
 __Note__: The required model definition file is not included in this repository. To run a trained network, download one of the provided ONNX files from the the [release page](../../releases) and place it in the `./cfg` folder. Then, pass the appropriate path to the `weight_file` argument in the provided launch file:
 
 ```
-roslaunch tesse_segmentation_ros semantic_segmentation_tesse.launch weight_file:=PATH_TO_WEIGHT_FILE
+roslaunch tesse_segmentation_ros tesse_segmentation_ros.launch weight_file:=PATH_TO_WEIGHT_FILE
 ```
 
 ### Training a new network
